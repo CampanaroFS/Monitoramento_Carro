@@ -17,4 +17,8 @@ hoje 17/02 acabará o horário de verão, atrase seu relogio.
 
 Modificação sendo realizada para mostrar o conceito do diff.
 
+Segue o link do meu perfil do Linkedin:
+
+https://www.linkedin.com/in/felipe-campanaro-82618383/
+
 
