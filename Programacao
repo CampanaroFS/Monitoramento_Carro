@@ -1,0 +1,97 @@
+int Ignicao = 13; //Sensor do motor
+int Led_Motor = 3; //Led indicador que o motor está ligado ou desligado
+int S_Rotacoes = 9; //Sensor de rotações do motor
+int Led_Rotacoes = 4; //Led indicador ligado rotações>2000, desligado rotações<2000
+int S_Temp80 = 11; //Sensor de temperatura de 80°
+int Led_Temp80 = 6; //Led indicador, ligado temp>80°, desligado temp<80°
+int S_Temp90 = 12; //Sensor de temperatura de 90°
+int Led_Temp90 = 7; //Led indicador, ligado temp>90°, desligado temp<90°
+int S_Oleo = 10; //Sensor da pressão do óleo 
+int Led_Oleo = 5; //Led indicador, ligado pressao fora de especificação, desligado pressao ok
+int Leitura;
+int Leitura0;
+int Leitura1;
+int Leitura2;     //Varíaveis de leitura dos sensores
+int Leitura3;
+int Leitura4;
+
+int Alarme = 2; //Alarme indicador de problema
+
+unsigned long previousMillis = 0;
+const long interval = 30000; //Intervalo de 30s, caso o motorista não desligar o motor
+
+void setup() {
+  pinMode(Ignicao, INPUT);
+  pinMode(S_Rotacoes, INPUT);
+  pinMode(S_Temp80, INPUT);   
+  pinMode(S_Temp90, INPUT);
+  pinMode(S_Oleo, INPUT);
+  pinMode(Led_Motor, OUTPUT);
+  pinMode(Led_Rotacoes, OUTPUT);
+  pinMode(Led_Temp80, OUTPUT);
+  pinMode(Led_Temp90, OUTPUT);
+  pinMode(Led_Oleo, OUTPUT);  
+  pinMode(Alarme, OUTPUT); 
+}
+void loop() {
+  Leitura0 = digitalRead(Ignicao);//Verifica se a ignição está ligada ou desligada
+  if(Leitura0 == HIGH){
+    digitalWrite(Led_Motor, HIGH);//Acende led indicador de motor ligado
+      Leitura1 = digitalRead(S_Oleo);//Verifica se a pressão do óleo está na especificação
+      if(Leitura1 == HIGH){
+        digitalWrite(Alarme, HIGH);//Aciona o alarme e liga led indicador do sensor do óleo
+        digitalWrite(Led_Oleo, HIGH);
+      }
+      Leitura2 = digitalRead(S_Rotacoes);//Verifica se o número de rotações está acima de 2000rpm
+        if(Leitura2 == HIGH){
+          digitalWrite(Led_Rotacoes, HIGH); //Acende led indicador de rotações acima de 2000
+          Leitura3 = digitalRead(S_Temp80); //Verifica se a temperatura está acima de 80°, caso as rotações estiver acima de 2000rpm
+          if(Leitura3 == HIGH){
+            digitalWrite(Alarme, HIGH); //Aciona Alarme e led indicador de temperatura 80°
+            digitalWrite(Led_Temp80, HIGH);}
+          }
+          else{
+            Leitura4 = digitalRead(S_Temp90); //Caso rotações estiver abaixo de 2000rpm, verifica sensor de temperatura de 90°
+            if(Leitura4 == HIGH){
+              digitalWrite(Alarme, HIGH); //Aciona alarme e led indicador de temperatura 90°
+              digitalWrite(Led_Temp90, HIGH);
+              }}
+              
+              if(digitalRead(S_Temp90) || digitalRead(S_Temp80) || digitalRead(S_Oleo) == HIGH){ //Se algum dos sensores estiver em N.L. alto, chamar função verificacao
+                verificacao();           
+               }     
+                  }
+                  else{                               //Para chave ignição desligado, sensores e leds indicadores todos desligados
+                     digitalWrite(Led_Motor, LOW);
+                     digitalWrite(Alarme, LOW);
+                     digitalWrite(S_Rotacoes, LOW);
+                     digitalWrite(Led_Rotacoes, LOW);
+                     digitalWrite(S_Temp80, LOW);     
+                     digitalWrite(Led_Temp80, LOW);
+                     digitalWrite(S_Temp90, LOW);
+                     digitalWrite(Led_Temp90, LOW);
+                     digitalWrite(S_Oleo, LOW);
+                     digitalWrite(Led_Oleo, LOW);}
+                     }  
+    void verificacao(){         
+       unsigned long currentMillis = millis();        //Chama função timer Millis
+       if(currentMillis - previousMillis > interval){ //Se a diferença do tempo atual(currentMillis) com tempo antetior(previousMillis) ultrapassar os 30s, executar comandos dentro do if
+            previousMillis = currentMillis; //Salva o ultimo tempo que foi executado comandos dentro do if
+            if(digitalRead(Led_Motor) == HIGH){
+            digitalWrite(Led_Motor, LOW); //Desliga led indicador do motor
+            digitalWrite(Alarme, LOW); //Desliga o alarme
+            }   
+            while(digitalRead(Ignicao) == HIGH){ //Se a ignição continuar ligado, led indicador de motor, continuará desligado
+              digitalWrite(Led_Motor, LOW);
+              }
+              while(digitalRead(S_Oleo) == HIGH){ //Se a pressão do óleo estiver em N.L. alto, não será possível religar o motor
+                digitalWrite(Led_Motor, LOW);
+               }
+               while(digitalRead(S_Temp80) == HIGH){ //Se a temperatura de 80° estiver em N.L. alto, não será possível religar o motor
+                digitalWrite(Led_Motor, LOW);
+                }
+                while(digitalRead(S_Temp90) == HIGH){ //Se a temperatura de 90° estiver em N.L. alto, não será possível religar o motor
+                  digitalWrite(Led_Motor, LOW);
+                  }
+                  }                
+                    }
