@@ -7,6 +7,7 @@ regime perigoso. Caracterizado por pressão do óleo insuficiente ou pela temper
 A este sistema, foi acrescentado função de desligar o motor, automaticamente, caso o motorista não o faça até 30 seggundos após o alarme ser acionado.
 
 
+Att
 
 
 
